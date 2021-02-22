@@ -1,6 +1,5 @@
 
 from create_lmdb_dataset import createDatasetAux
-import matlab.engine
 import os
 import numpy as np
 import pathlib
@@ -68,13 +67,6 @@ def create_data(rel_in_path, rel_out_path):
 
 
 if __name__ == '__main__':
-    '''
-    eng = matlab.engine.start_matlab()
-    eng.cd(r'.\create_dataset', nargout=0)
-    eng.create_dataset('/hhd_dataset/train/', nargout=0)
-    eng.create_dataset('/hhd_dataset/test/', nargout=0)
-    eng.quit()
-    '''
 
     directory = "expanded_hhd"
     parent_dir = "."
