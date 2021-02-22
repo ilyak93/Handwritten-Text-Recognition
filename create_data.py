@@ -78,9 +78,10 @@ if __name__ == '__main__':
         val_path = os.path.join(expanded_path, 'val')
         os.mkdir(val_path)
 
+    print('creating expanded hhd of training data')
     create_data('/hhd_dataset/train/', '/expanded_hhd/train/')
+    print('creating expanded hhd of validation data')
     create_data('/hhd_dataset/val/', '/expanded_hhd/val/')
-
 
     directory = "lmdb"
     parent_dir = "."
@@ -91,7 +92,9 @@ if __name__ == '__main__':
         os.mkdir(lmdb_train)
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
+        print('creating lmdb for train data')
         createDatasetAux('mod/hhd_dataset/train/', './lmdb/train/')
+        print('creating lmdb for validation data')
         createDatasetAux('mod/hhd_dataset/val/', './lmdb/val/')
 
 

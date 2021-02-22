@@ -119,6 +119,7 @@ def createDatasetAux(path, output_path):
         aleph = ord('א')
         all_letter_dirs = sorted([int(i) for i in all_letter_dirs])
         for letter_num_dir in all_letter_dirs:
+            print(chr(letter_num_dir + aleph))
             letter_path = data_path / str(letter_num_dir)
             files =  os.listdir(letter_path)
             for file in files:
