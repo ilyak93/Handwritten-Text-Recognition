@@ -22,6 +22,7 @@ def create_data(rel_in_path, rel_out_path):
 
     aleph = 'א';
     for chr_dir in chr_dirs:
+        print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
         chr_output_dir_path = dir_out + chr_dir
         os.mkdir(chr_output_dir_path);
