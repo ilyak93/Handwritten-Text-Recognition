@@ -15,7 +15,7 @@
     "num_fiducial": 20,
     "output_channel": 512,
     "rgb": false,
-    "saved_model": "best_accuracy.pth",
+    "saved_model": "saved_models\\TPS-ResNet-BiLSTM-Attn-Seed1111\\best_accuracy.pth",
     "sensitive": false,
     "workers": 0
 }

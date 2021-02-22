@@ -35,7 +35,7 @@ def createDataset(inputPath, gtFile, outputPath, checkValid=True):
         checkValid : if true, check the validity of every image
     """
     os.makedirs(outputPath, exist_ok=True)
-    env = lmdb.open(outputPath, map_size=1500000000)
+    env = lmdb.open(outputPath, map_size=4000000000)
     cache = {}
     cnt = 1
 
@@ -82,11 +82,11 @@ def createDataset(inputPath, gtFile, outputPath, checkValid=True):
     writeCache(env, cache)
     print('Created dataset with %d samples' % nSamples)
 
+import pathlib
 
 if __name__ == '__main__':
     #fire.Fire(createDataset)
     with open("G:/data/gt.txt", "w", encoding="utf-8") as gt_file:
-        import pathlib
 
         G = pathlib.Path('G:/')
         data = 'data/val'
@@ -103,3 +103,28 @@ if __name__ == '__main__':
                 gt_file.write(str(file_path)+'\t'+hebrew_char+'\n')
 
     createDataset('G:/data', 'G:/data/gt.txt', 'G:/data/val')
+
+
+
+def createDatasetAux(path, output_path):
+    import pathlib
+    input_path = pathlib.Path(path)
+    name = input_path.name
+    parent = input_path.parents[0]
+    gt_name = name+'-gt.txt'
+    gt_path = str(parent / gt_name)
+    with open(gt_path, "w", encoding="utf-8") as gt_file:
+        data_path = pathlib.Path(path)
+        all_letter_dirs = os.listdir(data_path)
+        aleph = ord('א')
+        all_letter_dirs = sorted([int(i) for i in all_letter_dirs])
+        for letter_num_dir in all_letter_dirs:
+            letter_path = data_path / str(letter_num_dir)
+            files =  os.listdir(letter_path)
+            for file in files:
+                hebrew_char = chr(letter_num_dir+aleph)
+                file_path = (letter_path / file).relative_to(input_path)
+                gt_file.write(str(file_path)+'\t'+hebrew_char+'\n')
+
+    createDataset(path, gt_path, output_path)
+
