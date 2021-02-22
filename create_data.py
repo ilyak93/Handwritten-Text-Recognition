@@ -20,7 +20,7 @@ def create_data(rel_in_path, rel_out_path):
 
     chr_dirs = os.listdir(dir_in_path)
 
-    aleph = 'א';
+    aleph = ord('א')
     for chr_dir in chr_dirs:
         print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
