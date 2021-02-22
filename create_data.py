@@ -16,9 +16,9 @@ def create_data(rel_in_path, rel_out_path):
 
     l_size = 3;
 
-    dir_in_path = pathlib.Path(dir_in).absolute();
+    dir_in_path = pathlib.Path(dir_in);
 
-    chr_dirs = os.listdir(dir_in_path)
+    chr_dirs = os.listdir('./'+str(dir_in_path))
 
     aleph = 'א';
     for chr_dir in chr_dirs:
