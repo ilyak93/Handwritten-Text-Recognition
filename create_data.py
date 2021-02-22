@@ -5,7 +5,6 @@ import numpy as np
 import pathlib
 
 def create_data(rel_in_path, rel_out_path):
-    print('creation started')
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
@@ -17,7 +16,7 @@ def create_data(rel_in_path, rel_out_path):
 
     l_size = 3;
 
-    dir_in_path = pathlib.Path(dir_in);
+    dir_in_path = pathlib.Path(dir_in).absolute();
 
     chr_dirs = os.listdir(dir_in_path)
 
