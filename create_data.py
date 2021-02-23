@@ -19,7 +19,6 @@ def create_data(rel_in_path, rel_out_path):
     dir_in_path = pathlib.Path(dir_in);
 
     chr_dirs = os.listdir(dir_in_path)
-
     aleph = ord('א')
     for chr_dir in chr_dirs:
         print(chr(int(chr_dir) + aleph))
@@ -32,10 +31,16 @@ def create_data(rel_in_path, rel_out_path):
             cur_chr_img_path = chr_dir_path+'/'+chr_file
             cur_chr_img = Image.open(cur_chr_img_path)
             cur_chr_img = np.asarray(cur_chr_img)
+            sz = cur_chr_img.shape
+            if sz[2] == 4: # remove the alpha channel
+                cur_chr_img = cur_chr_img[:, :, :-1]
+
             for cur_size in range(0, l_size):
                 for r in range(0,cur_size+1):
                     sz = cur_chr_img.shape;
                     background = np.copy(bg[0:sz[0], 0:((cur_size+1)*sz[1]), :])
+                    if sz[2] != 3:
+                        print('here')
                     background[:, r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
                     (name, format) = chr_file.split('.')
                     Image.fromarray(background).save(
