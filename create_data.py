@@ -5,7 +5,7 @@ import numpy as np
 import pathlib
 import asyncio
 
-async def create_data(rel_in_path, rel_out_path):
+def create_data(rel_in_path, rel_out_path):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
@@ -85,9 +85,9 @@ if __name__ == '__main__':
         val_path = os.path.join(expanded_path, 'val')
         os.mkdir(val_path)
         print('creating expanded hhd of training data')
-        asyncio.run(create_data('/hhd_dataset/train/', '/expanded_hhd/train/'))
+        create_data('/hhd_dataset/train/', '/expanded_hhd/train/')
         print('creating expanded hhd of validation data')
-        asyncio.run(create_data('/hhd_dataset/val/', '/expanded_hhd/val/'))
+        create_data('/hhd_dataset/val/', '/expanded_hhd/val/')
 
 
     directory = "lmdb"
