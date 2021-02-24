@@ -4,7 +4,7 @@ from create_lmdb_dataset import createDatasetAux, writeCache
 import os
 import numpy as np
 import pathlib
-import asyncio
+import io
 
 def create_data(rel_in_path, rel_out_path, map_size):
     dir_in = './' + rel_in_path
@@ -44,10 +44,13 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     sz = cur_chr_img.shape;
                     background = np.copy(bg[0:sz[0], 0:((cur_size+1)*sz[1]), :])
                     background[:, r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
-                    name, _ = chr_file.split('.')
+                    _, format = chr_file.split('.')
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt
-                    imageBin = background.tobytes()
+                    background = Image.fromarray(background)
+                    with io.BytesIO() as output:
+                        background.save(output, format=format)
+                        imageBin = output.getvalue()
                     cache[imageKey] = imageBin
                     label = chr(int(chr_dir) + aleph)
                     cache[labelKey] = label.encode()
@@ -64,10 +67,13 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     sz = cur_chr_img.shape;
                     background = np.copy(bg[0:(cur_size+1)*sz[0], 0:sz[1], :])
                     background[c * sz[0]:(c + 1) * sz[0], :, :] = cur_chr_img
-                    (name, _) = chr_file.split('.')
+                    _, format = chr_file.split('.')
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt
-                    imageBin = background.tobytes()
+                    background = Image.fromarray(background)
+                    with io.BytesIO() as output:
+                        background.save(output, format=format)
+                        imageBin = output.getvalue()
                     cache[imageKey] = imageBin
                     label = chr(int(chr_dir) + aleph)
                     cache[labelKey] = label.encode()
@@ -82,10 +88,13 @@ def create_data(rel_in_path, rel_out_path, map_size):
                         sz = cur_chr_img.shape;
                         background = np.copy(bg[0:((cur_size + 1) * sz[0]), 0:((cur_size + 1) * sz[1]), :])
                         background[c * sz[0]:(c + 1) * sz[0],r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
-                        (name, _) = chr_file.split('.')
+                        _, format = chr_file.split('.')
                         imageKey = 'image-%09d'.encode() % cnt
                         labelKey = 'label-%09d'.encode() % cnt
-                        imageBin = background.tobytes()
+                        background = Image.fromarray(background)
+                        with io.BytesIO() as output:
+                            background.save(output, format=format)
+                            imageBin = output.getvalue()
                         cache[imageKey] = imageBin
                         label = chr(int(chr_dir) + aleph)
                         cache[labelKey] = label.encode()
@@ -110,9 +119,9 @@ if __name__ == '__main__':
         os.mkdir(lmdb_train)
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
-        print('creating lmdb for train data')
-        create_data('/hhd_dataset/train/', './lmdb/train/', 4000000000)
+        #print('creating lmdb for train data')
+        #create_data('/hhd_dataset/train/', './lmdb/train/', 4000000000)
         print('creating lmdb for validation data')
-        create_data('/hhd_dataset/val/', './lmdb/vals/', 1000000000)
+        create_data('/hhd_dataset/val/', './lmdb/vals/', 500000000)
 
 
