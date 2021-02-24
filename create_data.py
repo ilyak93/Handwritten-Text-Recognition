@@ -6,13 +6,13 @@ import numpy as np
 import pathlib
 import asyncio
 
-def create_data(rel_in_path, rel_out_path):
+def create_data(rel_in_path, rel_out_path, map_size):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
 
     os.makedirs(dir_out, exist_ok=True)
-    env = lmdb.open(dir_out, map_size=500000000)
+    env = lmdb.open(dir_out, map_size=map_size)
     cache = {}
     cnt = 1
 
@@ -111,8 +111,8 @@ if __name__ == '__main__':
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
         print('creating lmdb for train data')
-        create_data('/hhd_dataset/train/', './lmdb/train/')
+        create_data('/hhd_dataset/train/', './lmdb/train/', 4000000)
         print('creating lmdb for validation data')
-        create_data('/hhd_dataset/val/', './lmdb/vals/')
+        create_data('/hhd_dataset/val/', './lmdb/vals/', 1000000)
 
 
