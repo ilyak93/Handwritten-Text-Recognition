@@ -6,12 +6,12 @@ import numpy as np
 import pathlib
 import io
 
-def create_data(rel_in_path, rel_out_path, map_size):
+def create_data(rel_in_path, rel_out_path, map_size, format):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
 
-    output_format = 'jpeg'
+    output_format = format
 
     os.makedirs(dir_out, exist_ok=True)
     env = lmdb.open(dir_out, map_size=map_size)
@@ -47,6 +47,8 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     background = np.copy(bg[0:sz[0], 0:((cur_size+1)*sz[1]), :])
                     background[:, r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
                     _, format = chr_file.split('.')
+                    if output_format == 'same':
+                        output_format = format
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt
                     background = Image.fromarray(background)
@@ -70,6 +72,8 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     background = np.copy(bg[0:(cur_size+1)*sz[0], 0:sz[1], :])
                     background[c * sz[0]:(c + 1) * sz[0], :, :] = cur_chr_img
                     _, format = chr_file.split('.')
+                    if output_format == 'same':
+                        output_format = format
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt
                     background = Image.fromarray(background)
@@ -91,6 +95,8 @@ def create_data(rel_in_path, rel_out_path, map_size):
                         background = np.copy(bg[0:((cur_size + 1) * sz[0]), 0:((cur_size + 1) * sz[1]), :])
                         background[c * sz[0]:(c + 1) * sz[0],r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
                         _, format = chr_file.split('.')
+                        if output_format == 'same':
+                            output_format = format
                         imageKey = 'image-%09d'.encode() % cnt
                         labelKey = 'label-%09d'.encode() % cnt
                         background = Image.fromarray(background)
@@ -125,8 +131,8 @@ if __name__ == '__main__':
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
         print('creating lmdb for train data')
-        create_data('/hhd_dataset/train/', './lmdb/train/', 4000000000)
+        create_data('/hhd_dataset/train/', './lmdb/train/', 4000000000, 'jpeg')
         print('creating lmdb for validation data')
-        create_data('/hhd_dataset/val/', './lmdb/val/', 1000000000)
+        create_data('/hhd_dataset/val/', './lmdb/val/', 1000000000, 'same')
 
 
