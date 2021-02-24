@@ -18,7 +18,7 @@ def create_data(rel_in_path, rel_out_path):
     l_size = 3;
 
     dir_in_path = pathlib.Path(dir_in);
-
+    out_fromat = 'jpg'
     chr_dirs = os.listdir(dir_in_path)
     aleph = ord('א')
     for chr_dir in chr_dirs:
@@ -43,9 +43,9 @@ def create_data(rel_in_path, rel_out_path):
                     if sz[2] != 3:
                         print('here')
                     background[:, r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
-                    (name, format) = chr_file.split('.')
+                    (name, _) = chr_file.split('.')
                     Image.fromarray(background).save(
-                        dir_out + chr_dir + '/' + 'r'+ name + '_' + str(cur_size) + '_' + str(r)+'.'+format)
+                        dir_out + chr_dir + '/' + 'r'+ name + '_' + str(cur_size) + '_' + str(r)+'.'+ out_fromat)
 
                 if cur_size == 0:
                     continue
