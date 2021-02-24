@@ -105,7 +105,10 @@ def create_data(rel_in_path, rel_out_path, map_size):
                             cache = {}
                             print('Written %d' % cnt)
                         cnt += 1
-
+    nSamples = cnt - 1
+    cache['num-samples'.encode()] = str(nSamples).encode()
+    writeCache(env, cache)
+    print('Created dataset with %d samples' % nSamples)
 
 
 
