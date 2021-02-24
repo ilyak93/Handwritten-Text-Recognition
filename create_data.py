@@ -11,6 +11,8 @@ def create_data(rel_in_path, rel_out_path, map_size):
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
 
+    output_format = 'jpeg'
+
     os.makedirs(dir_out, exist_ok=True)
     env = lmdb.open(dir_out, map_size=map_size)
     cache = {}
@@ -49,7 +51,7 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     labelKey = 'label-%09d'.encode() % cnt
                     background = Image.fromarray(background)
                     with io.BytesIO() as output:
-                        background.save(output, format=format)
+                        background.save(output, format=output_format)
                         imageBin = output.getvalue()
                     cache[imageKey] = imageBin
                     label = chr(int(chr_dir) + aleph)
@@ -72,7 +74,7 @@ def create_data(rel_in_path, rel_out_path, map_size):
                     labelKey = 'label-%09d'.encode() % cnt
                     background = Image.fromarray(background)
                     with io.BytesIO() as output:
-                        background.save(output, format=format)
+                        background.save(output, format=output_format)
                         imageBin = output.getvalue()
                     cache[imageKey] = imageBin
                     label = chr(int(chr_dir) + aleph)
@@ -93,7 +95,7 @@ def create_data(rel_in_path, rel_out_path, map_size):
                         labelKey = 'label-%09d'.encode() % cnt
                         background = Image.fromarray(background)
                         with io.BytesIO() as output:
-                            background.save(output, format=format)
+                            background.save(output, format=output_format)
                             imageBin = output.getvalue()
                         cache[imageKey] = imageBin
                         label = chr(int(chr_dir) + aleph)
