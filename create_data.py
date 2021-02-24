@@ -127,6 +127,6 @@ if __name__ == '__main__':
         print('creating lmdb for train data')
         create_data('/hhd_dataset/train/', './lmdb/train/', 4000000000)
         print('creating lmdb for validation data')
-        create_data('/hhd_dataset/val/', './lmdb/vals/', 1000000000)
+        create_data('/hhd_dataset/val/', './lmdb/val/', 1000000000)
 
 
