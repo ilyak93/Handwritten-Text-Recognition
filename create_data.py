@@ -1,5 +1,6 @@
+import lmdb
 
-from create_lmdb_dataset import createDatasetAux
+from create_lmdb_dataset import createDatasetAux, writeCache
 import os
 import numpy as np
 import pathlib
@@ -10,6 +11,11 @@ def create_data(rel_in_path, rel_out_path):
     dir_out = './' + rel_out_path;
     bg = './bg.jpg';
 
+    os.makedirs(dir_out, exist_ok=True)
+    env = lmdb.open(dir_out, map_size=500000000)
+    cache = {}
+    cnt = 1
+
     from PIL import Image
     # Open the image form working directory
     bg = Image.open(bg)
@@ -18,14 +24,11 @@ def create_data(rel_in_path, rel_out_path):
     l_size = 3;
 
     dir_in_path = pathlib.Path(dir_in);
-    out_fromat = 'jpg'
     chr_dirs = os.listdir(dir_in_path)
     aleph = ord('א')
     for chr_dir in chr_dirs:
         print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
-        chr_output_dir_path = dir_out + chr_dir
-        os.mkdir(chr_output_dir_path);
         cur_chr_path = pathlib.Path(chr_dir_path);
         chr_files = os.listdir(cur_chr_path)
         for chr_file in chr_files:
@@ -40,12 +43,19 @@ def create_data(rel_in_path, rel_out_path):
                 for r in range(0,cur_size+1):
                     sz = cur_chr_img.shape;
                     background = np.copy(bg[0:sz[0], 0:((cur_size+1)*sz[1]), :])
-                    if sz[2] != 3:
-                        print('here')
                     background[:, r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
-                    (name, _) = chr_file.split('.')
-                    Image.fromarray(background).save(
-                        dir_out + chr_dir + '/' + 'r'+ name + '_' + str(cur_size) + '_' + str(r)+'.'+ out_fromat)
+                    name, _ = chr_file.split('.')
+                    imageKey = 'image-%09d'.encode() % cnt
+                    labelKey = 'label-%09d'.encode() % cnt
+                    imageBin = background.tobytes()
+                    cache[imageKey] = imageBin
+                    label = chr(int(chr_dir) + aleph)
+                    cache[labelKey] = label.encode()
+                    if cnt % 1000 == 0:
+                        writeCache(env, cache)
+                        cache = {}
+                        print('Written %d' % cnt)
+                    cnt += 1
 
                 if cur_size == 0:
                     continue
@@ -54,41 +64,42 @@ def create_data(rel_in_path, rel_out_path):
                     sz = cur_chr_img.shape;
                     background = np.copy(bg[0:(cur_size+1)*sz[0], 0:sz[1], :])
                     background[c * sz[0]:(c + 1) * sz[0], :, :] = cur_chr_img
-                    (name, format) = chr_file.split('.')
-                    Image.fromarray(background).save(
-                        dir_out + chr_dir + '/' + 'c' + name + '_' + str(cur_size) + '_' + str(c) + '.' + format)
+                    (name, _) = chr_file.split('.')
+                    imageKey = 'image-%09d'.encode() % cnt
+                    labelKey = 'label-%09d'.encode() % cnt
+                    imageBin = background.tobytes()
+                    cache[imageKey] = imageBin
+                    label = chr(int(chr_dir) + aleph)
+                    cache[labelKey] = label.encode()
+                    if cnt % 1000 == 0:
+                        writeCache(env, cache)
+                        cache = {}
+                        print('Written %d' % cnt)
+                    cnt += 1
 
                 for r in range(0, cur_size + 1):
                     for c in range(0, cur_size + 1):
                         sz = cur_chr_img.shape;
                         background = np.copy(bg[0:((cur_size + 1) * sz[0]), 0:((cur_size + 1) * sz[1]), :])
                         background[c * sz[0]:(c + 1) * sz[0],r * sz[1]:(r + 1) * sz[1], :] = cur_chr_img
-                        (name, format) = chr_file.split('.')
-                        Image.fromarray(background).save(
-                            dir_out + chr_dir + '/' + 'r_c' + name + '_' + str(cur_size) + '_' + str(r) + '_' + str(c) + '.' + format)
-
-
+                        (name, _) = chr_file.split('.')
+                        imageKey = 'image-%09d'.encode() % cnt
+                        labelKey = 'label-%09d'.encode() % cnt
+                        imageBin = background.tobytes()
+                        cache[imageKey] = imageBin
+                        label = chr(int(chr_dir) + aleph)
+                        cache[labelKey] = label.encode()
+                        if cnt % 1000 == 0:
+                            writeCache(env, cache)
+                            cache = {}
+                            print('Written %d' % cnt)
+                        cnt += 1
 
 
 
 
 
 if __name__ == '__main__':
-
-    directory = "expanded_hhd"
-    parent_dir = "."
-    expanded_path = os.path.join(parent_dir, directory)
-    if not os.path.exists(expanded_path):
-        os.mkdir(expanded_path)
-        train_path = os.path.join(expanded_path, 'train')
-        os.mkdir(train_path)
-        val_path = os.path.join(expanded_path, 'val')
-        os.mkdir(val_path)
-        print('creating expanded hhd of training data')
-        create_data('/hhd_dataset/train/', '/expanded_hhd/train/')
-        print('creating expanded hhd of validation data')
-        create_data('/hhd_dataset/val/', '/expanded_hhd/val/')
-
 
     directory = "lmdb"
     parent_dir = "."
@@ -100,8 +111,8 @@ if __name__ == '__main__':
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
         print('creating lmdb for train data')
-        createDatasetAux('./expanded_hhd/train/', './lmdb/train/')
+        create_data('/hhd_dataset/train/', './lmdb/train/')
         print('creating lmdb for validation data')
-        createDatasetAux('./expanded_hhd/val/', './lmdb/val/')
+        create_data('/hhd_dataset/val/', './lmdb/vals/')
 
 
