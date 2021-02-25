@@ -259,7 +259,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
             writeCache(env, cache)
             cache = {}
             print('Written %d' % cnt)
-			print('total size till now: %d' % total_size)
+            print('total size till now: %d' % total_size)
         cnt += 1
     nSamples = cnt - 1
     cache['num-samples'.encode()] = str(nSamples).encode()
