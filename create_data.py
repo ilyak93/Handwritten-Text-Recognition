@@ -33,7 +33,6 @@ def create_data(rel_in_path, rel_out_path, map_size, format):
     chr_dirs = os.listdir(dir_in_path)
     aleph = ord('א')
     for chr_dir in chr_dirs:
-        print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
         cur_chr_path = pathlib.Path(chr_dir_path);
         chr_files = os.listdir(cur_chr_path)
@@ -436,7 +435,9 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format):
                             background.save(output, format=output_format)
                             imageBin = output.getvalue()
                             total_bytes += len(imageBin)
-                        if total_bytes + len(imageBin) > map_size - 30000000:
+                        tmp = total_bytes + len(imageBin)
+                        tmp2 = map_size - 30000000
+                        if total_bytes + len(imageBin) > map_size - 40000000:
                             writeCache(env, cache)
                             cache = {}
                             print('Written %d' % cnt)
