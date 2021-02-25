@@ -288,6 +288,7 @@ if __name__ == '__main__':
         words_num = 100000
         print('creating lmdb for train data')
         create_words_data('/hhd_dataset/train/', './lmdb/train/', 4000000000, 'jpeg', words_num)
+    words_num = 100000
     print('creating lmdb for validation data')
     create_words_data('/hhd_dataset/val/', './lmdb/val/', 400000000, 'jpeg', int(words_num / 10))
 
