@@ -135,7 +135,6 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
     cache = {}
     cnt = 1
 
-
     dir_in_path = pathlib.Path(dir_in);
     chr_dirs = os.listdir(dir_in_path)
     idx_to_chr_path = defaultdict(def_value)
@@ -157,7 +156,6 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
     bg = './bg.jpg';
     bg = Image.open(bg)
     bg = np.asarray(bg)
-    total_size = 0
     for i in range (words_num):
         one_or_two = np.random.randint(0, 10)
         if one_or_two == 3:
@@ -173,6 +171,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
         width = 0
 
         label = ''
+        total_size = 0
         for i in range(word_len-1):
             letter = np.random.randint(22)
             if non_ending_letters[letter] in low_letters:
@@ -259,16 +258,15 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
             writeCache(env, cache)
             cache = {}
             print('Written %d' % cnt)
-            print('total size till now: %d' % total_size)
         cnt += 1
     nSamples = cnt - 1
     cache['num-samples'.encode()] = str(nSamples).encode()
     writeCache(env, cache)
-    print('Created dataset with %d samples of size %d bytes' % nSamples, total_size)
+    print('Created dataset with %d samples of size % bytes' % nSamples, total_size)
 
 
 #with deversity in space
-def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
+def create_words_data2(rel_in_path, rel_out_path, map_size, format):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
 
@@ -285,7 +283,7 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
     idx_to_chr_path = defaultdict(def_value)
     aleph = ord('א')
     for chr_dir in chr_dirs:
-        print(chr(int(chr_dir) + aleph))
+        #print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
         cur_chr_path = pathlib.Path(chr_dir_path);
         chr_files = os.listdir(cur_chr_path)
@@ -301,7 +299,10 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
     bg = './bg.jpg';
     bg = Image.open(bg)
     bg = np.asarray(bg)
-    for i in range (words_num):
+    words_count = 0
+    total_copies = []
+    total_bytes = 0
+    while total_bytes < map_size:
         one_or_two = np.random.randint(0, 10)
         if one_or_two == 3:
             word_len = np.random.randint(11, 20)
@@ -369,7 +370,6 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
         else:
             total_length = ceil(length_lower + length_upper / 2)
 
-
         #word generation from letters
         #print(label)
         background = np.copy(bg[0:total_length, 0:width, :])
@@ -385,14 +385,15 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
                 width_start_idx:(col_end_idx), :] = letter_img
             width_start_idx += cur_width
 
-        background_img = Image.fromarray(background)
-        ImageShow.show(background_img)
-        print()
+        #background_img = Image.fromarray(background)
+        #ImageShow.show(background_img)
+        #print()
         #save image in lmdb
         #_, format = chr_file.split('.')
         #if output_format == 'same':
             #output_format = format
         # word writing to lmdb in compressed form with bytesIO - reduces total size
+        """
         imageKey = 'image-%09d'.encode() % cnt
         labelKey = 'label-%09d'.encode() % cnt
         background_img = Image.fromarray(background)
@@ -400,6 +401,7 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
             background_img.save(output, format=output_format)
             imageBin = output.getvalue()
             total_size += len(imageBin)
+            
         cache[imageKey] = imageBin
         cache[labelKey] = label.encode()
         if cnt % 1000 == 0:
@@ -407,18 +409,60 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format, words_num):
             cache = {}
             print('Written %d' % cnt)
         cnt += 1
+        """
+        cur_word_img = background
+        words_count += 1
+        #place diversity images generation
         word_l, word_w, _ = background.shape
-        #generation with space diversity
-        background2 = np.copy(bg[0:int(total_length*2), 0:int(width*2), :])
-        background2[0:word_l, 0:word_w, :] = background
-        background2_img = Image.fromarray(background)
-        ImageShow.show(background2_img)
-        print()
+
+        row_shift = np.random.randint(0, word_len)
+        col_shift = np.random.randint(0, 5)
+        _, width_step, _ = list(reversed(images))[0].shape
+        copies = 0
+        for cls in range(col_shift+1):
+            for rws in range(row_shift+1):
+                for c in range(0, cls + 1):
+                    for r in range(0, rws+1):
+                        background = np.copy(bg[0:word_l+word_l*cls, 0:word_w+width_step*rws, :])
+                        background[c * word_l:(c + 1) * word_l, r * width_step:word_w + r * width_step, :] = cur_word_img
+                        #background_img = Image.fromarray(background)
+                        #ImageShow.show(background_img)
+                        copies += 1
+                        imageKey = 'image-%09d'.encode() % cnt
+                        labelKey = 'label-%09d'.encode() % cnt
+                        total_bytes += len(imageKey)+len(labelKey)
+                        background = Image.fromarray(background)
+                        with io.BytesIO() as output:
+                            background.save(output, format=output_format)
+                            imageBin = output.getvalue()
+                            total_bytes += len(imageBin)
+                        if total_bytes + len(imageBin) > map_size - 30000000:
+                            writeCache(env, cache)
+                            cache = {}
+                            print('Written %d' % cnt)
+                            nSamples = cnt - 1
+                            cache['num-samples'.encode()] = str(nSamples).encode()
+                            writeCache(env, cache)
+                            print(
+                                'Created dataset with %d samples  with %d words and %d copies in average' % (nSamples,
+                                    words_count, np.asarray(total_copies).mean()))
+                            return
+                        else :
+                            cache[imageKey] = imageBin
+                            cache[labelKey] = label.encode()
+                            if cnt % 1000 == 0:
+                                writeCache(env, cache)
+                                cache = {}
+                                print('Written %d' % cnt)
+                                print(total_bytes)
+                            cnt += 1
+        print(copies)
+        total_copies.append(copies)
 
     nSamples = cnt - 1
     cache['num-samples'.encode()] = str(nSamples).encode()
     writeCache(env, cache)
-    print('Created dataset with %d samples of size % bytes' % nSamples, total_size)
+    print('Created dataset with %d samples of size % bytes with %d words and %d copies in average' % nSamples, total_size, words_count, np.asarray(total_copies).mean())
 
 if __name__ == '__main__':
 
@@ -438,8 +482,8 @@ if __name__ == '__main__':
         # print('creating lmdb for train data with words')
         words_num = 100000
         print('creating lmdb for train data')
-        create_words_data('/hhd_dataset/train/', './lmdb/train/', 4000000000, 'jpeg', words_num)
+        create_words_data2('/hhd_dataset/train/', './lmdb/train/', 4000000000, 'jpeg')
         print('creating lmdb for validation data')
-        create_words_data('/hhd_dataset/val/', './lmdb/val/', 1200000000, 'jpeg', int(words_num / 10))
+        create_words_data2('/hhd_dataset/val/', './lmdb/val/', 1000000000, 'jpeg')
 
 
