@@ -139,7 +139,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
     idx_to_chr_path = defaultdict(def_value)
     aleph = ord('א')
     for chr_dir in chr_dirs:
-        print(chr(int(chr_dir) + aleph))
+        #print(chr(int(chr_dir) + aleph))
         chr_dir_path = dir_in + chr_dir
         cur_chr_path = pathlib.Path(chr_dir_path);
         chr_files = os.listdir(cur_chr_path)
