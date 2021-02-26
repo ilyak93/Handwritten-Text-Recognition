@@ -242,7 +242,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', type=int, default=128, help='input batch size')
     parser.add_argument('--num_iter', type=int, default=30000, help='number of iterations to train for')
     parser.add_argument('--valInterval', type=int, default=1000, help='Interval between each validation')
-    parser.add_argument('--saved_model', default='/content/drive/MyDrive/best_accuracy.pth', help="path to model to continue training")
+    parser.add_argument('--saved_model', default='saved_models/TPS-ResNet-BiLSTM-Attn-Seed1111/best_accuracy.pth', help="path to model to continue training")
     parser.add_argument('--FT', action='store_true', help='whether to do fine-tuning')
     parser.add_argument('--adam', action='store_true', help='Whether to use adam (default is Adadelta)')
     parser.add_argument('--lr', type=float, default=1, help='learning rate, default=1.0 for Adadelta')
