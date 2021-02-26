@@ -264,7 +264,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
     nSamples = cnt - 1
     cache['num-samples'.encode()] = str(nSamples).encode()
     writeCache(env, cache)
-    print('Created dataset with %d samples of size % bytes' % nSamples, total_bytes)
+    print('Created dataset with %d samples of size %d bytes' % nSamples, total_bytes)
 
 
 #with deversity in space
