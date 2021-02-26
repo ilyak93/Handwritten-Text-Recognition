@@ -246,7 +246,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
             #output_format = format
         imageKey = 'image-%09d'.encode() % cnt
         labelKey = 'label-%09d'.encode() % cnt
-		total_bytes += len(imageKey) + len(labelKey)
+        total_bytes += len(imageKey) + len(labelKey)
         background = Image.fromarray(background)
         with io.BytesIO() as output:
             background.save(output, format=output_format)
@@ -255,7 +255,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
         cache[imageKey] = imageBin
         cache[labelKey] = label.encode()
         if cnt % 1000 == 0:
-			env.set_mapsize(int(total_bytes*1.09))
+            env.set_mapsize(int(total_bytes*1.09))
             writeCache(env, cache)
             cache = {}
             print('Written %d' % cnt)
