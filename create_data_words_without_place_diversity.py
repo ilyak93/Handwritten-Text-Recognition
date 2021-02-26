@@ -155,6 +155,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
     bg = './bg.jpg';
     bg = Image.open(bg)
     bg = np.asarray(bg)
+	total_bytes = 0
     while cnt-1 < images_num:
         one_or_two = np.random.randint(0, 10)
         if one_or_two == 3:
@@ -170,7 +171,6 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
         width = 0
 
         label = ''
-        total_bytes = 0
         for i in range(word_len-1):
             letter = np.random.randint(22)
             if non_ending_letters[letter] in low_letters:
