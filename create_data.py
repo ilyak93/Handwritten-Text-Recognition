@@ -265,7 +265,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, words_num):
 
 
 #with deversity in space
-def create_words_data2(rel_in_path, rel_out_path, map_size, format):
+def create_words_data2(rel_in_path, rel_out_path, map_size, format, images_num):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
 
@@ -301,7 +301,8 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format):
     words_count = 0
     total_copies = []
     total_bytes = 0
-    while total_bytes < map_size:
+    images_count = 0
+    while images_count < images_num:
         one_or_two = np.random.randint(0, 10)
         if one_or_two == 3:
             word_len = np.random.randint(11, 20)
@@ -316,7 +317,6 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format):
         width = 0
 
         label = ''
-        total_size = 0
         #letters generations separetly
         for i in range(word_len-1):
             letter = np.random.randint(22)
@@ -434,36 +434,27 @@ def create_words_data2(rel_in_path, rel_out_path, map_size, format):
                         with io.BytesIO() as output:
                             background.save(output, format=output_format)
                             imageBin = output.getvalue()
-                            total_bytes += len(imageBin)
-                        tmp = total_bytes + len(imageBin)
-                        tmp2 = map_size - 30000000
-                        if total_bytes + len(imageBin) > map_size - 40000000:
+                            total_bytes += len(imageBin) + len(label.encode())
+                        cache[imageKey] = imageBin
+                        cache[labelKey] = label.encode()
+                        if cnt % 1000 == 0:
+                            env.set_mapsize(int(total_bytes*1.09))
                             writeCache(env, cache)
                             cache = {}
                             print('Written %d' % cnt)
-                            nSamples = cnt - 1
-                            cache['num-samples'.encode()] = str(nSamples).encode()
-                            writeCache(env, cache)
-                            print(
-                                'Created dataset with %d samples  with %d words and %d copies in average' % (nSamples,
-                                    words_count, np.asarray(total_copies).mean()))
-                            return
-                        else :
-                            cache[imageKey] = imageBin
-                            cache[labelKey] = label.encode()
-                            if cnt % 1000 == 0:
-                                writeCache(env, cache)
-                                cache = {}
-                                print('Written %d' % cnt)
-                                print(total_bytes)
-                            cnt += 1
-        print(copies)
+                        cnt += 1
+        images_count += copies
         total_copies.append(copies)
 
+    if len(cache) != 0:
+        env.set_mapsize(int(total_bytes * 1.09))
+        writeCache(env, cache)
+        cache = {}
+        print('Written %d' % (cnt-1))
     nSamples = cnt - 1
     cache['num-samples'.encode()] = str(nSamples).encode()
     writeCache(env, cache)
-    print('Created dataset with %d samples of size % bytes with %d words and %d copies in average' % nSamples, total_size, words_count, np.asarray(total_copies).mean())
+    print('Created dataset with %d samples of size %d bytes with %d words and %d copies in average' % (nSamples, total_bytes, words_count, np.asarray(total_copies).mean()))
 
 if __name__ == '__main__':
 
@@ -483,8 +474,8 @@ if __name__ == '__main__':
         # print('creating lmdb for train data with words')
         words_num = 100000
         print('creating lmdb for train data')
-        create_words_data2('/hhd_dataset/train/', './lmdb/train/', 4000000000, 'jpeg')
+        create_words_data2('/hhd_dataset/train/', './lmdb/train/', 1, 'jpeg', 100000)
         print('creating lmdb for validation data')
-        create_words_data2('/hhd_dataset/val/', './lmdb/val/', 1000000000, 'jpeg')
+        create_words_data2('/hhd_dataset/val/', './lmdb/val/', 1, 'jpeg', 10000)
 
 
