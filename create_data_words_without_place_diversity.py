@@ -259,7 +259,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
             env.set_mapsize(int(total_bytes*1.17))
             writeCache(env, cache)
             exit(0)
-			cache = {}
+            cache = {}
             print('Written %d' % cnt)
         cnt += 1
     nSamples = cnt - 1
