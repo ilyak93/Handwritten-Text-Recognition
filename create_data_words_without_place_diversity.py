@@ -257,7 +257,7 @@ def create_words_data(rel_in_path, rel_out_path, map_size, format, images_num):
         if cnt % 1000 == 0:
             print(total_bytes)
             env.set_mapsize(int(total_bytes*1.17))
-			exit(0)
+            exit(0)
             writeCache(env, cache)
             cache = {}
             print('Written %d' % cnt)
