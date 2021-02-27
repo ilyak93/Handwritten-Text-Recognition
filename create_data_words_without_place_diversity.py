@@ -278,8 +278,8 @@ if __name__ == '__main__':
         os.mkdir(lmdb_train)
         lmdb_val = os.path.join(str(lmdb_path), 'val')
         os.mkdir(lmdb_val)
-        #print('creating lmdb for train data')
-        #create_words_data('/hhd_dataset/train/', './lmdb/train/', 1, 'jpeg', 1000000)
+        print('creating lmdb for train data')
+        create_words_data('/hhd_dataset/train/', './lmdb/train/', 1, 'jpeg', 1000000)
         print('creating lmdb for validation data')
         create_words_data('/hhd_dataset/val/', './lmdb/val/', 1, 'jpeg', 100000)
 
