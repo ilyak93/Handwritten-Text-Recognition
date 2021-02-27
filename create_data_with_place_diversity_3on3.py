@@ -297,7 +297,7 @@ def create_words_data3(rel_in_path, rel_out_path, map_size, format, images_num):
                         cache[imageKey] = imageBin
                         cache[labelKey] = label.encode()
                         if cnt % 1000 == 0:
-                            env.set_mapsize(int(total_bytes * 1.2))
+                            env.set_mapsize(int(total_bytes * 1.12))
                             writeCache(env, cache)
                             cache = {}
                             print('Written %d' % cnt)
