@@ -155,7 +155,7 @@ def create_words_data_spaces(rel_in_path, rel_out_path, map_size, format, images
         cache[labelKey] = label.encode()
         if cnt % 1000 == 0:
             #print(total_bytes)
-            env.set_mapsize(int(total_bytes*1.2))
+            env.set_mapsize(int(total_bytes*1.17))
             writeCache(env, cache)
             cache = {}
             print('Written %d' % cnt)
