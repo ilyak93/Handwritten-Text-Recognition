@@ -126,7 +126,7 @@ def def_value():
 
 
 # with deversity in space 3 on 3
-def create_words_data_3on3_with_spaces(rel_in_path, rel_out_path, map_size, format, images_num):
+def create_words_data_5on5_with_spaces(rel_in_path, rel_out_path, map_size, format, images_num):
     dir_in = './' + rel_in_path
     dir_out = './' + rel_out_path;
 
@@ -328,8 +328,8 @@ if __name__ == '__main__':
         # print('creating lmdb for train data with words')
         words_num = 100000
         print('creating lmdb for train data')
-        create_words_data3('/hhd_dataset/train/', './lmdb/train/', 1, 'jpeg', 1000000)
+        create_words_data_5on5_with_spaces('/hhd_dataset/train/', './lmdb/train/', 1, 'jpeg', 1000000)
         print('creating lmdb for validation data')
-        create_words_data3('/hhd_dataset/val/', './lmdb/val/', 1, 'jpeg', 100000)
+        create_words_data_5on5_with_spaces('/hhd_dataset/val/', './lmdb/val/', 1, 'jpeg', 100000)
 
 
