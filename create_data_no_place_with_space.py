@@ -136,8 +136,8 @@ def create_words_data_spaces(rel_in_path, rel_out_path, map_size, format, images
                 width_start_idx += cur_width
                 background =  background[:, 0:width_start_idx, :]
 
-        background = Image.fromarray(background)
-        ImageShow.show(background)
+        #background = Image.fromarray(background)
+        #ImageShow.show(background)
         #print()
         #save image in lmdb
         #_, format = chr_file.split('.')
