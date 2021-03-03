@@ -243,9 +243,9 @@ def create_words_data_transformations(rel_in_path, rel_out_path, map_size, forma
                 width_start_idx:(col_end_idx), :] = letter_img
             width_start_idx += cur_width
 
-        background = Image.fromarray(background)
-        ImageShow.show(background)
-        background = np.asarray(background)
+        #background = Image.fromarray(background)
+        #ImageShow.show(background)
+        #background = np.asarray(background)
 
 
 
@@ -285,9 +285,9 @@ def create_words_data_transformations(rel_in_path, rel_out_path, map_size, forma
             background = slant_word(background, shear_factor)
 
 
-        background = Image.fromarray(background)
-        ImageShow.show(background)
-        background = np.asarray(background)
+        #background = Image.fromarray(background)
+        #ImageShow.show(background)
+        #background = np.asarray(background)
         #print()
         #save image in lmdb
         #_, format = chr_file.split('.')
